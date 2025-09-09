@@ -74,7 +74,8 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   # assets:
-  # Do not bundle .env as an asset; flutter_dotenv reads from project root at runtime.
+  assets:
+    - .env
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
