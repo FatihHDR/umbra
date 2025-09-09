@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../models/conversation.dart';
+import '../../../repositories/providers.dart';
 import '../../../repositories/conversation_repository.dart';
-import '../providers.dart';
 
 class ChatState {
   final String? conversationId;

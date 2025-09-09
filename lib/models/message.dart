@@ -7,15 +7,21 @@ class Message {
   const Message({required this.role, required this.content});
 
   Map<String, dynamic> toJson() => {
-        'role': role.name,
+        'role': switch (role) {
+          MessageRole.system => 'system',
+          MessageRole.user => 'user',
+          MessageRole.assistant => 'assistant',
+        },
         'content': content,
       };
 
-  factory Message.fromJson(Map<String, dynamic> json) => Message(
-        role: MessageRole.values.firstWhere(
-          (e) => e.name == json['role'],
-          orElse: () => MessageRole.user,
-        ),
-        content: json['content'] ?? '',
-      );
+  factory Message.fromJson(Map<String, dynamic> json) {
+    final roleStr = (json['role'] as String?) ?? 'user';
+    final role = switch (roleStr) {
+      'system' => MessageRole.system,
+      'assistant' => MessageRole.assistant,
+      _ => MessageRole.user,
+    };
+    return Message(role: role, content: (json['content'] ?? '') as String);
+  }
 }

@@ -7,10 +7,17 @@
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider_platform_interface/path_provider_platform_interface.dart';
+import 'package:path_provider_windows/path_provider_windows.dart';
 import 'package:umbra/app/app.dart';
 
 void main() {
   testWidgets('Umbra app shows HomeScreen', (tester) async {
+    // Ensure Hive box exists for tests
+    PathProviderPlatform.instance = PathProviderWindows();
+    Hive.init('.dart_tool/test_hive');
+    await Hive.openBox('conversations');
     await tester.pumpWidget(const ProviderScope(child: UmbraApp()));
     expect(find.text('Umbra'), findsOneWidget);
   });
