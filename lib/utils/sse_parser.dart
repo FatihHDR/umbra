@@ -7,13 +7,17 @@ class DeepSeekSse {
 
   static Stream<Map<String, dynamic>> parse(Stream<List<int>> byteStream) async* {
     // Convert bytes to lines
-    final utf8Stream = byteStream.transform(utf8.decoder).transform(const LineSplitter());
-    for await (final line in utf8Stream) {
-      if (line.isEmpty) continue;
+    final lines = byteStream
+        .transform(utf8.decoder)
+        .transform(const LineSplitter());
+    await for (final line in lines) {
+      if (line.isEmpty) {
+        continue;
+      }
       if (line.startsWith('data:')) {
         final payload = line.substring(5).trim();
         if (payload == "[DONE]") {
-          yield { 'done': true };
+          yield {'done': true};
           continue;
         }
         try {
