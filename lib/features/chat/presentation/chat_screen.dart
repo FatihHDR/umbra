@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers.dart';
 import '../../../utils/citation_utils.dart';
+import '../../../utils/code_syntax_highlighter.dart';
 
 class ChatScreen extends ConsumerWidget {
   const ChatScreen({super.key});
@@ -39,6 +40,7 @@ class ChatScreen extends ConsumerWidget {
                           border: Border(left: BorderSide(color: Theme.of(context).colorScheme.primary, width: 3)),
                         ),
                       ),
+                      syntaxHighlighter: CodeSyntaxHighlighter(),
                       onTapLink: (text, href, title) {
                         if (href != null && href.startsWith('citation://')) {
                           final idx = int.tryParse(href.split('://').last);
