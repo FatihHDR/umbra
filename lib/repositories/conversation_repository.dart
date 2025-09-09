@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:uuid/uuid.dart';
+import 'dart:math';
 
 import '../models/message.dart';
 import '../models/conversation.dart';
@@ -45,7 +45,7 @@ class ConversationRepository {
       orElse: () => const Message(role: MessageRole.user, content: 'Umbra'),
     );
     final title = firstUser.content.trim().split('\n').first;
-    final id = const Uuid().v4();
+  final id = _randomId();
     await _save(id, messages, title: title);
     return id;
   }
@@ -70,7 +70,7 @@ class ConversationRepository {
       id = res.$1;
       messages = List.of(res.$2);
     } else {
-      id = const Uuid().v4();
+  id = _randomId();
       messages = [];
     }
 
@@ -122,4 +122,10 @@ class ConversationStreamEvent {
           String id, String content, List<String> citations) =>
       ConversationStreamEvent._(id,
           content: content, citations: citations, completed: true);
+}
+
+String _randomId() {
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  final rng = Random.secure();
+  return List.generate(16, (_) => chars[rng.nextInt(chars.length)]).join();
 }
