@@ -5,7 +5,6 @@ import '../providers.dart';
 import 'chat_screen.dart';
 import 'home_screen.dart';
 import 'settings_screen.dart';
-import '../../../core/language/app_strings.dart';
 import 'sources_screen.dart';
 import '../../../widgets/umbra_bottom_nav.dart';
 
@@ -15,8 +14,27 @@ class HistoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
   final vm = ref.watch(chatViewModelProvider(null));
-  final t = ref.watch(appStringsProvider);
     return Scaffold(
+      bottomNavigationBar: UmbraBottomNav(
+        currentIndex: 2,
+        onTap: (i) {
+          if (i == 2) return;
+          switch (i) {
+            case 0:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+              break;
+            case 1:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatScreen()));
+              break;
+            case 3:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const SourcesScreen()));
+              break;
+            case 4:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
+              break;
+          }
+        },
+      ),
       body: ListView.separated(
         itemCount: vm.history.length,
         separatorBuilder: (_, __) => const Divider(height: 1),
@@ -41,8 +59,4 @@ class HistoryScreen extends ConsumerWidget {
   }
 }
 
-PageRouteBuilder _fade(Widget child) => PageRouteBuilder(
-      transitionDuration: const Duration(milliseconds: 260),
-      pageBuilder: (_, __, ___) => child,
-      transitionsBuilder: (_, anim, __, c) => FadeTransition(opacity: anim, child: c),
-    );
+// Removed unused fade helper.

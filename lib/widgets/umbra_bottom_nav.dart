@@ -1,54 +1,128 @@
 import 'package:flutter/material.dart';
+import 'dart:ui';
 
-/// Floating, pill-shaped bottom navigation bar with only icons (no labels).
-/// Usage: place in Scaffold.bottomNavigationBar and supply currentIndex & onTap.
+/// Glass floating navigation pill with:
+/// - Blur + translucency
+/// - Smaller height & icons
+/// - Active pill highlight
+/// - Shadow / glow
+/// - Reduced horizontal padding & larger corner radius
 class UmbraBottomNav extends StatelessWidget {
   const UmbraBottomNav({super.key, required this.currentIndex, required this.onTap});
 
-  final int currentIndex;
+  final int currentIndex; // 0..4
   final ValueChanged<int> onTap;
+
+  static const List<IconData> _icons = [
+    Icons.home_rounded,
+    Icons.chat_bubble_rounded,
+    Icons.history_rounded,
+    Icons.description_rounded,
+    Icons.settings_rounded,
+  ];
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final bg = theme.colorScheme.surface; // opaque so nothing "behind" shows
+    final primary = theme.colorScheme.primary;
+    final inactive = Colors.white.withOpacity(0.68);
+    final glass = Colors.white.withOpacity(0.06);
+
     return SafeArea(
       top: false,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(28, 0, 28, 16),
-        child: Container(
-          decoration: BoxDecoration(
-            color: bg,
-            borderRadius: BorderRadius.circular(28),
-            border: Border.all(color: Colors.white.withOpacity(0.06), width: 1),
-          ),
-          padding: const EdgeInsets.symmetric(horizontal: 4),
-          child: Theme(
-            // Remove ripple spread / splash, keep only color change via selectedItemColor
-            data: theme.copyWith(
-              splashFactory: NoSplash.splashFactory,
-              splashColor: Colors.transparent,
-              highlightColor: Colors.transparent,
-              hoverColor: Colors.transparent,
+        padding: const EdgeInsets.fromLTRB(18, 0, 18, 30), // extra bottom gap for floating feel
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(44),
+          child: BackdropFilter(
+            filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: glass,
+                borderRadius: BorderRadius.circular(44),
+                border: Border.all(color: Colors.white.withOpacity(0.10), width: 1),
+                boxShadow: [
+                  BoxShadow(
+                    color: primary.withOpacity(0.20),
+                    blurRadius: 26,
+                    spreadRadius: 1,
+                    offset: const Offset(0, 6),
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.35),
+                    blurRadius: 36,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: SizedBox(
+                height: 52,
+                child: Row(
+                  children: List.generate(_icons.length, (i) {
+                    final selected = i == currentIndex;
+                    return _NavItem(
+                      icon: _icons[i],
+                      selected: selected,
+                      primary: primary,
+                      inactive: inactive,
+                      onTap: () => onTap(i),
+                    );
+                  }),
+                ),
+              ),
             ),
-            child: BottomNavigationBar(
-              currentIndex: currentIndex,
-              onTap: onTap,
-              backgroundColor: Colors.transparent,
-              elevation: 0,
-              type: BottomNavigationBarType.fixed,
-              showSelectedLabels: false,
-              showUnselectedLabels: false,
-              selectedItemColor: theme.colorScheme.primary,
-              unselectedItemColor: Colors.white70,
-              iconSize: 22,
-              items: const [
-                BottomNavigationBarItem(icon: Icon(Icons.home_rounded), label: ''),
-                BottomNavigationBarItem(icon: Icon(Icons.chat_bubble_rounded), label: ''),
-                BottomNavigationBarItem(icon: Icon(Icons.history_rounded), label: ''),
-                BottomNavigationBarItem(icon: Icon(Icons.description_rounded), label: ''),
-                BottomNavigationBarItem(icon: Icon(Icons.settings_rounded), label: ''),
-              ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _NavItem extends StatelessWidget {
+  const _NavItem({
+    required this.icon,
+    required this.selected,
+    required this.primary,
+    required this.inactive,
+    required this.onTap,
+  });
+
+  final IconData icon;
+  final bool selected;
+  final Color primary;
+  final Color inactive;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final highlight = primary.withOpacity(0.18);
+    final borderColor = primary.withOpacity(0.48);
+    return Expanded(
+      child: Semantics(
+        selected: selected,
+        button: true,
+        child: InkWell(
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent,
+          onTap: onTap,
+          child: Center(
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 260),
+              curve: Curves.easeOutCubic,
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+              decoration: selected
+                  ? BoxDecoration(
+                      color: highlight,
+                      borderRadius: BorderRadius.circular(28),
+                      border: Border.all(color: borderColor.withOpacity(0.55), width: 1),
+                    )
+                  : null,
+              child: Icon(
+                icon,
+                size: 19,
+                color: selected ? primary : inactive,
+              ),
             ),
           ),
         ),

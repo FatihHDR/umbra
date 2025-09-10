@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../widgets/umbra_logo_compact.dart';
 import '../../../core/language/app_strings.dart';
 import '../../../widgets/umbra_bottom_nav.dart';
 import 'home_screen.dart';
@@ -12,28 +11,30 @@ import 'settings_screen.dart';
 class SourcesScreen extends ConsumerWidget {
   const SourcesScreen({super.key});
 
-  void _go(BuildContext context, int index) {
-    if (index == 3) return; // already here (Sources index)
-    switch (index) {
-      case 0:
-        Navigator.pushReplacement(context, _fade(const HomeScreen()));
-        break;
-      case 1:
-        Navigator.pushReplacement(context, _fade(const ChatScreen()));
-        break;
-      case 2:
-        Navigator.pushReplacement(context, _fade(const HistoryScreen()));
-        break;
-      case 4:
-        Navigator.pushReplacement(context, _fade(const SettingsScreen()));
-        break;
-    }
-  }
-
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = ref.watch(appStringsProvider);
     return Scaffold(
+      bottomNavigationBar: UmbraBottomNav(
+        currentIndex: 3,
+        onTap: (i) {
+          if (i == 3) return;
+          switch (i) {
+            case 0:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+              break;
+            case 1:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatScreen()));
+              break;
+            case 2:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HistoryScreen()));
+              break;
+            case 4:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
+              break;
+          }
+        },
+      ),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
@@ -83,8 +84,4 @@ class _SourceTile extends StatelessWidget {
   }
 }
 
-PageRouteBuilder _fade(Widget child) => PageRouteBuilder(
-      transitionDuration: const Duration(milliseconds: 260),
-      pageBuilder: (_, __, ___) => child,
-      transitionsBuilder: (_, anim, __, c) => FadeTransition(opacity: anim, child: c),
-    );
+  // Removed unused fade helper.

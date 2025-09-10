@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers.dart';
+import '../../../widgets/umbra_background.dart';
+import '../../../core/language/app_strings.dart';
+import '../../../widgets/umbra_bottom_nav.dart';
 import 'chat_screen.dart';
 import 'history_screen.dart';
-import '../../../widgets/umbra_background.dart';
-import '../../../widgets/umbra_logo_compact.dart';
-import '../../../widgets/umbra_bottom_nav.dart';
-import '../../../core/language/app_strings.dart';
-import 'settings_screen.dart';
 import 'sources_screen.dart';
+import 'settings_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -20,7 +19,27 @@ class HomeScreen extends ConsumerWidget {
   final notifier = ref.read(chatViewModelProvider(null).notifier);
   final t = ref.watch(appStringsProvider);
     return Scaffold(
-      body: UmbraBackground(
+        bottomNavigationBar: UmbraBottomNav(
+          currentIndex: 0,
+          onTap: (i) {
+            if (i == 0) return;
+            switch (i) {
+              case 1:
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatScreen()));
+                break;
+              case 2:
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HistoryScreen()));
+                break;
+              case 3:
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const SourcesScreen()));
+                break;
+              case 4:
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
+                break;
+            }
+          },
+        ),
+        body: UmbraBackground(
         child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 720),
@@ -63,8 +82,7 @@ class HomeScreen extends ConsumerWidget {
   }
 
   void _goChat(BuildContext context, WidgetRef ref) {
-  Navigator.pushReplacement(context, _fade(const ChatScreen()));
-    ref.read(chatViewModelProvider(null).notifier).ask();
+  ref.read(chatViewModelProvider(null).notifier).ask();
   }
 }
 
@@ -75,11 +93,7 @@ class _LoadingBar extends StatefulWidget {
   State<_LoadingBar> createState() => _LoadingBarState();
 }
 
-PageRouteBuilder _fade(Widget child) => PageRouteBuilder(
-      transitionDuration: const Duration(milliseconds: 260),
-      pageBuilder: (_, __, ___) => child,
-      transitionsBuilder: (_, anim, __, c) => FadeTransition(opacity: anim, child: c),
-    );
+// Removed unused fade helper.
 
 class _LoadingBarState extends State<_LoadingBar>
     with SingleTickerProviderStateMixin {

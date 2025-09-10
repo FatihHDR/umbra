@@ -1,40 +1,41 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../widgets/umbra_logo_compact.dart';
 import '../../../core/language/app_strings.dart';
 import '../../../widgets/umbra_bottom_nav.dart';
-import '../../../core/language/language_provider.dart';
-import '../presentation/home_screen.dart';
+import 'home_screen.dart';
 import 'chat_screen.dart';
 import 'history_screen.dart';
 import 'sources_screen.dart';
+import '../../../core/language/language_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
-
-  void _go(BuildContext context, int index) {
-    if (index == 4) return; // already here (Settings index)
-    switch (index) {
-      case 0:
-        Navigator.pushReplacement(context, _fade(const HomeScreen()));
-        break;
-      case 1:
-        Navigator.pushReplacement(context, _fade(const ChatScreen()));
-        break;
-      case 2:
-        Navigator.pushReplacement(context, _fade(const HistoryScreen()));
-        break;
-      case 3:
-        Navigator.pushReplacement(context, _fade(const SourcesScreen()));
-        break;
-    }
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
   final t = ref.watch(appStringsProvider);
     return Scaffold(
+      bottomNavigationBar: UmbraBottomNav(
+        currentIndex: 4,
+        onTap: (i) {
+          if (i == 4) return;
+          switch (i) {
+            case 0:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+              break;
+            case 1:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatScreen()));
+              break;
+            case 2:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HistoryScreen()));
+              break;
+            case 3:
+              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const SourcesScreen()));
+              break;
+          }
+        },
+      ),
       body: ListView(
         padding: const EdgeInsets.all(20),
         children: [
@@ -116,8 +117,4 @@ class _SectionLabel extends StatelessWidget {
   }
 }
 
-PageRouteBuilder _fade(Widget child) => PageRouteBuilder(
-      transitionDuration: const Duration(milliseconds: 260),
-      pageBuilder: (_, __, ___) => child,
-      transitionsBuilder: (_, anim, __, c) => FadeTransition(opacity: anim, child: c),
-    );
+// Removed unused fade helper.
