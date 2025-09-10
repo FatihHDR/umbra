@@ -15,6 +15,11 @@ class SourcesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = ref.watch(appStringsProvider);
     return Scaffold(
+      appBar: AppBar(
+        title: Text(t.sourcesTitle),
+        backgroundColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+      ),
       bottomNavigationBar: UmbraBottomNav(
         currentIndex: 3,
         onTap: (i) {

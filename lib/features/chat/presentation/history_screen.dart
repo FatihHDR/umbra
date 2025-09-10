@@ -7,6 +7,7 @@ import 'home_screen.dart';
 import 'settings_screen.dart';
 import 'sources_screen.dart';
 import '../../../widgets/umbra_bottom_nav.dart';
+import '../../../core/language/app_strings.dart';
 
 class HistoryScreen extends ConsumerWidget {
   const HistoryScreen({super.key});
@@ -14,7 +15,13 @@ class HistoryScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
   final vm = ref.watch(chatViewModelProvider(null));
+    final t = ref.watch(appStringsProvider);
     return Scaffold(
+      appBar: AppBar(
+        title: Text(t.historyTitle),
+        backgroundColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+      ),
       bottomNavigationBar: UmbraBottomNav(
         currentIndex: 2,
         onTap: (i) {

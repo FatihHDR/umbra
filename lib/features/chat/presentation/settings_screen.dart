@@ -16,6 +16,11 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
   final t = ref.watch(appStringsProvider);
     return Scaffold(
+      appBar: AppBar(
+        title: Text(t.settingsTitle),
+        backgroundColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+      ),
       bottomNavigationBar: UmbraBottomNav(
         currentIndex: 4,
         onTap: (i) {

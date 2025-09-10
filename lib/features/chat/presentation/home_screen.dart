@@ -9,6 +9,7 @@ import 'chat_screen.dart';
 import 'history_screen.dart';
 import 'sources_screen.dart';
 import 'settings_screen.dart';
+import '../../../widgets/umbra_logo_compact.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -19,6 +20,20 @@ class HomeScreen extends ConsumerWidget {
   final notifier = ref.read(chatViewModelProvider(null).notifier);
   final t = ref.watch(appStringsProvider);
     return Scaffold(
+        appBar: AppBar(
+          title: const UmbraLogoCompact(size: 20),
+          backgroundColor: Colors.transparent,
+          scrolledUnderElevation: 0,
+          actions: [
+            IconButton(
+              tooltip: t.historyTooltip,
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => const HistoryScreen()),
+              ),
+              icon: const Icon(Icons.history_rounded),
+            )
+          ],
+        ),
         bottomNavigationBar: UmbraBottomNav(
           currentIndex: 0,
           onTap: (i) {

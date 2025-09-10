@@ -12,6 +12,7 @@ import 'home_screen.dart';
 import 'history_screen.dart';
 import 'sources_screen.dart';
 import 'settings_screen.dart';
+import '../../../widgets/umbra_logo_compact.dart';
 
 class ChatScreen extends ConsumerWidget {
   const ChatScreen({super.key});
@@ -22,6 +23,11 @@ class ChatScreen extends ConsumerWidget {
   final notifier = ref.read(chatViewModelProvider(null).notifier);
   final t = ref.watch(appStringsProvider);
     return Scaffold(
+      appBar: AppBar(
+        title: const UmbraLogoCompact(size: 18),
+        backgroundColor: Colors.transparent,
+        scrolledUnderElevation: 0,
+      ),
       bottomNavigationBar: UmbraBottomNav(
         currentIndex: 1,
         onTap: (i) {
