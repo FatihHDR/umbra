@@ -8,6 +8,7 @@ import 'home_screen.dart';
 import 'chat_screen.dart';
 import 'history_screen.dart';
 import 'sources_screen.dart';
+import '../../../utils/fade_nav.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -28,16 +29,16 @@ class SettingsScreen extends ConsumerWidget {
           if (i == 4) return;
           switch (i) {
             case 0:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+              fadeReplace(context, const HomeScreen());
               break;
             case 1:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatScreen()));
+              fadeReplace(context, const ChatScreen());
               break;
             case 2:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HistoryScreen()));
+              fadeReplace(context, const HistoryScreen());
               break;
             case 3:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const SourcesScreen()));
+              fadeReplace(context, const SourcesScreen());
               break;
           }
         },

@@ -10,6 +10,7 @@ import 'sources_screen.dart';
 import 'settings_screen.dart';
 import '../../../widgets/umbra_logo_compact.dart';
 import '../../../widgets/umbra_bottom_nav.dart';
+import '../../../utils/fade_nav.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -41,16 +42,16 @@ class HomeScreen extends ConsumerWidget {
           if (i == 0) return;
           switch (i) {
             case 1:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatScreen()));
+              fadeReplace(context, const ChatScreen());
               break;
             case 2:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HistoryScreen()));
+              fadeReplace(context, const HistoryScreen());
               break;
             case 3:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const SourcesScreen()));
+              fadeReplace(context, const SourcesScreen());
               break;
             case 4:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
+              fadeReplace(context, const SettingsScreen());
               break;
           }
         },

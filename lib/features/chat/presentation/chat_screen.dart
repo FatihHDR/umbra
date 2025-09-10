@@ -13,6 +13,7 @@ import 'home_screen.dart';
 import 'history_screen.dart';
 import 'sources_screen.dart';
 import 'settings_screen.dart';
+import '../../../utils/fade_nav.dart';
 
 class ChatScreen extends ConsumerWidget {
   const ChatScreen({super.key});
@@ -22,6 +23,14 @@ class ChatScreen extends ConsumerWidget {
   final state = ref.watch(chatViewModelProvider(null));
   final notifier = ref.read(chatViewModelProvider(null).notifier);
   final t = ref.watch(appStringsProvider);
+  final mq = MediaQuery.of(context);
+  final kbInset = mq.viewInsets.bottom;
+  final keyboardOpen = kbInset > 0;
+  // Reserve space for floating navbar when keyboard closed; smaller gap when keyboard open.
+  const double navBaseHeight = 52; // pill container visual height
+  const double navExtraOffset = 10; // vertical offset we added earlier
+  final double navReserve = keyboardOpen ? 8 : (navBaseHeight + navExtraOffset + 10); // +10 comfort spacing
+  final double animatedBottomPadding = kbInset + navReserve;
     return Scaffold(
       extendBody: true,
       appBar: AppBar(
@@ -35,31 +44,31 @@ class ChatScreen extends ConsumerWidget {
           if (i == 1) return;
           switch (i) {
             case 0:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+              fadeReplace(context, const HomeScreen());
               break;
             case 2:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HistoryScreen()));
+              fadeReplace(context, const HistoryScreen());
               break;
             case 3:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const SourcesScreen()));
+              fadeReplace(context, const SourcesScreen());
               break;
             case 4:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
+              fadeReplace(context, const SettingsScreen());
               break;
           }
         },
       ),
       body: UmbraBackground(
         child: AnimatedPadding(
-          duration: const Duration(milliseconds: 180),
-          curve: Curves.easeOut,
-          // Add keyboard (viewInsets.bottom) so Column shrinks instead of overflowing.
-          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          duration: const Duration(milliseconds: 220),
+          curve: Curves.easeOutCubic,
+          // Combine keyboard inset + reserved space for floating navbar.
+          padding: EdgeInsets.only(bottom: animatedBottomPadding),
           child: Column(
           children: [
             Expanded(
               child: ListView.builder(
-                padding: const EdgeInsets.fromLTRB(16, 12, 16, 100), // bottom extra so last bubble not under navbar/composer
+                padding: EdgeInsets.fromLTRB(16, 12, 16, keyboardOpen ? 16 : 32),
               itemCount: state.messages.length + (state.loading ? 1 : 0),
               reverse: false,
               itemBuilder: (context, index) {
@@ -128,13 +137,17 @@ class ChatScreen extends ConsumerWidget {
                           ),
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        constraints: BoxConstraints(
+                          // Limit bubble width so long text wraps nicely.
+                          maxWidth: MediaQuery.of(context).size.width * 0.82,
+                        ),
                         child: isMarkdown
-                            // Wrap markdown to allow horizontal scroll for very long code/links -> removes overflow stripes
-                            ? SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: content,
-                              )
-                            : content,
+                            ? content // allow markdown to wrap lines naturally
+                            : Text(
+                                msg.content,
+                                style: const TextStyle(color: Colors.white),
+                                softWrap: true,
+                              ),
                       ),
                       if (index == state.messages.length - 1 && state.citations.isNotEmpty && msg.role.name == 'assistant')
                         Padding(
@@ -205,26 +218,25 @@ class _Composer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(12),
-        child: Row(
-          children: [
-            Expanded(
-              child: TextField(
-                onChanged: onChanged,
-                onSubmitted: (_) => onSend(),
-                textInputAction: TextInputAction.send,
-                decoration: InputDecoration(hintText: hint),
-              ),
+    // Removed SafeArea to avoid double bottom padding (already handled outside).
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextField(
+              onChanged: onChanged,
+              onSubmitted: (_) => onSend(),
+              textInputAction: TextInputAction.send,
+              decoration: InputDecoration(hintText: hint),
             ),
-            const SizedBox(width: 8),
-            IconButton(
-              onPressed: loading ? null : onSend,
-              icon: const Icon(Icons.send),
-            ),
-          ],
-        ),
+          ),
+          const SizedBox(width: 8),
+          IconButton(
+            onPressed: loading ? null : onSend,
+            icon: const Icon(Icons.send),
+          ),
+        ],
       ),
     );
   }

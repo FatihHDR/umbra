@@ -8,6 +8,7 @@ import 'sources_screen.dart';
 import 'settings_screen.dart';
 import '../../../widgets/umbra_bottom_nav.dart';
 import '../../../core/language/app_strings.dart';
+import '../../../utils/fade_nav.dart';
 
 class HistoryScreen extends ConsumerWidget {
   const HistoryScreen({super.key});
@@ -29,16 +30,16 @@ class HistoryScreen extends ConsumerWidget {
           if (i == 2) return;
           switch (i) {
             case 0:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const HomeScreen()));
+              fadeReplace(context, const HomeScreen());
               break;
             case 1:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const ChatScreen()));
+              fadeReplace(context, const ChatScreen());
               break;
             case 3:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const SourcesScreen()));
+              fadeReplace(context, const SourcesScreen());
               break;
             case 4:
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const SettingsScreen()));
+              fadeReplace(context, const SettingsScreen());
               break;
           }
         },
