@@ -3,6 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../providers.dart';
 import 'chat_screen.dart';
+import 'home_screen.dart';
+import 'settings_screen.dart';
+import '../../../widgets/umbra_bottom_nav.dart';
 
 class HistoryScreen extends ConsumerWidget {
   const HistoryScreen({super.key});
@@ -12,6 +15,23 @@ class HistoryScreen extends ConsumerWidget {
     final vm = ref.watch(chatViewModelProvider(null));
     return Scaffold(
       appBar: AppBar(title: const Text('Riwayat Percakapan')),
+      bottomNavigationBar: UmbraBottomNav(
+        currentIndex: 2,
+        onTap: (i) {
+          if (i == 2) return;
+          switch (i) {
+            case 0:
+              Navigator.pushReplacement(context, _fade(const HomeScreen()));
+              break;
+            case 1:
+              Navigator.pushReplacement(context, _fade(const ChatScreen()));
+              break;
+            case 3:
+              Navigator.pushReplacement(context, _fade(const SettingsScreen()));
+              break;
+          }
+        },
+      ),
       body: ListView.separated(
         itemCount: vm.history.length,
         separatorBuilder: (_, __) => const Divider(height: 1),
@@ -35,3 +55,9 @@ class HistoryScreen extends ConsumerWidget {
     );
   }
 }
+
+PageRouteBuilder _fade(Widget child) => PageRouteBuilder(
+      transitionDuration: const Duration(milliseconds: 260),
+      pageBuilder: (_, __, ___) => child,
+      transitionsBuilder: (_, anim, __, c) => FadeTransition(opacity: anim, child: c),
+    );

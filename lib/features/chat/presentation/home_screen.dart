@@ -6,6 +6,8 @@ import 'chat_screen.dart';
 import 'history_screen.dart';
 import '../../../widgets/umbra_background.dart';
 import '../../../widgets/umbra_logo_compact.dart';
+import '../../../widgets/umbra_bottom_nav.dart';
+import 'settings_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -26,6 +28,23 @@ class HomeScreen extends ConsumerWidget {
             icon: const Icon(Icons.history),
           )
         ],
+      ),
+      bottomNavigationBar: UmbraBottomNav(
+        currentIndex: 0,
+        onTap: (i) {
+          if (i == 0) return; // already here
+          switch (i) {
+            case 1:
+              Navigator.pushReplacement(context, _fade(const ChatScreen()));
+              break;
+            case 2:
+              Navigator.pushReplacement(context, _fade(const HistoryScreen()));
+              break;
+            case 3:
+              Navigator.pushReplacement(context, _fade(const SettingsScreen()));
+              break;
+          }
+        },
       ),
       body: UmbraBackground(
         child: Center(
@@ -70,9 +89,7 @@ class HomeScreen extends ConsumerWidget {
   }
 
   void _goChat(BuildContext context, WidgetRef ref) {
-    Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const ChatScreen()),
-    );
+  Navigator.pushReplacement(context, _fade(const ChatScreen()));
     ref.read(chatViewModelProvider(null).notifier).ask();
   }
 }
@@ -83,6 +100,12 @@ class _LoadingBar extends StatefulWidget {
   @override
   State<_LoadingBar> createState() => _LoadingBarState();
 }
+
+PageRouteBuilder _fade(Widget child) => PageRouteBuilder(
+      transitionDuration: const Duration(milliseconds: 260),
+      pageBuilder: (_, __, ___) => child,
+      transitionsBuilder: (_, anim, __, c) => FadeTransition(opacity: anim, child: c),
+    );
 
 class _LoadingBarState extends State<_LoadingBar>
     with SingleTickerProviderStateMixin {
