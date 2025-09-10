@@ -21,56 +21,102 @@ class ChatScreen extends ConsumerWidget {
         child: Column(
         children: [
           Expanded(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  if (state.error != null) ...[
-                    Text(state.error!, style: const TextStyle(color: Colors.red)),
-                    const SizedBox(height: 12),
-                  ],
-                  if (state.answer.isNotEmpty)
-                    MarkdownBody(
-                      data: linkifyCitations(state.answer),
-                      styleSheet: MarkdownStyleSheet(
-                        p: const TextStyle(color: Colors.white),
-                        strong: const TextStyle(fontWeight: FontWeight.bold),
-                        codeblockDecoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.3),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        blockquoteDecoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.05),
-                          border: Border(left: BorderSide(color: Theme.of(context).colorScheme.primary, width: 3)),
-                        ),
+            child: ListView.builder(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              itemCount: state.messages.length + (state.loading ? 1 : 0),
+              reverse: false,
+              itemBuilder: (context, index) {
+                if (index >= state.messages.length) {
+                  return const _TypingBubble();
+                }
+                final msg = state.messages[index];
+                final isUser = msg.role.name == 'user';
+                final bubbleColor = isUser
+                    ? Theme.of(context).colorScheme.primary.withOpacity(0.18)
+                    : const Color(0xFF1E1E20);
+                final align = isUser ? CrossAxisAlignment.end : CrossAxisAlignment.start;
+                final radius = BorderRadius.only(
+                  topLeft: const Radius.circular(18),
+                  topRight: const Radius.circular(18),
+                  bottomLeft: Radius.circular(isUser ? 18 : 4),
+                  bottomRight: Radius.circular(isUser ? 4 : 18),
+                );
+                Widget content;
+                if (msg.role.name == 'assistant') {
+                  content = MarkdownBody(
+                    data: linkifyCitations(msg.content),
+                    styleSheet: MarkdownStyleSheet(
+                      p: const TextStyle(color: Colors.white),
+                      strong: const TextStyle(fontWeight: FontWeight.bold),
+                      codeblockDecoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      syntaxHighlighter: CodeSyntaxHighlighter(),
-                      onTapLink: (text, href, title) {
-                        if (href != null && href.startsWith('citation://')) {
-                          final idx = int.tryParse(href.split('://').last);
-                          if (idx != null && idx > 0 && idx <= state.citations.length) {
-                            _showCitations(context, state.citations);
-                          }
-                        }
-                      },
+                      blockquoteDecoration: BoxDecoration(
+                        color: Colors.white.withOpacity(0.05),
+                        border: Border(left: BorderSide(color: Theme.of(context).colorScheme.primary, width: 3)),
+                      ),
                     ),
-                  if (state.citations.isNotEmpty) ...[
-                    const SizedBox(height: 12),
-                    Wrap(
-                      spacing: 8,
-                      children: [
-                        for (int i = 0; i < state.citations.length; i++)
-                          ActionChip(
-                            label: Text('[${i + 1}]', style: const TextStyle(color: Colors.white)),
-                            backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
-                            onPressed: () => _showCitations(context, state.citations),
+                    syntaxHighlighter: CodeSyntaxHighlighter(),
+                    onTapLink: (text, href, title) {
+                      if (href != null && href.startsWith('citation://')) {
+                        final idx = int.tryParse(href.split('://').last);
+                        if (idx != null && idx > 0 && idx <= state.citations.length) {
+                          _showCitations(context, state.citations);
+                        }
+                      }
+                    },
+                  );
+                } else {
+                  content = Text(
+                    msg.content,
+                    style: const TextStyle(color: Colors.white),
+                  );
+                }
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 6),
+                  child: Column(
+                    crossAxisAlignment: align,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: bubbleColor,
+                          borderRadius: radius,
+                          border: Border.all(
+                            color: isUser
+                                ? Theme.of(context).colorScheme.primary.withOpacity(0.35)
+                                : Colors.white.withOpacity(0.06),
+                            width: 1,
                           ),
-                      ],
-                    )
-                  ],
-                ],
-              ),
+                        ),
+                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                        child: content,
+                      ),
+                      if (index == state.messages.length - 1 && state.citations.isNotEmpty && msg.role.name == 'assistant')
+                        Padding(
+                          padding: const EdgeInsets.only(top: 6),
+                          child: Wrap(
+                            spacing: 8,
+                            children: [
+                              for (int i = 0; i < state.citations.length; i++)
+                                GestureDetector(
+                                  onTap: () => _showCitations(context, state.citations),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).colorScheme.primary.withOpacity(0.16),
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    child: Text('[${i + 1}]', style: const TextStyle(color: Colors.white)),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
+                );
+              },
             ),
           ),
           _Composer(onSend: notifier.ask, onChanged: notifier.setInput, loading: state.loading),
@@ -131,6 +177,57 @@ class _Composer extends StatelessWidget {
               icon: const Icon(Icons.send),
             ),
           ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TypingBubble extends StatefulWidget {
+  const _TypingBubble();
+  @override
+  State<_TypingBubble> createState() => _TypingBubbleState();
+}
+
+class _TypingBubbleState extends State<_TypingBubble> with SingleTickerProviderStateMixin {
+  late final AnimationController _c = AnimationController(vsync: this, duration: const Duration(milliseconds: 900))..repeat();
+  @override
+  void dispose() { _c.dispose(); super.dispose(); }
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Container(
+        margin: const EdgeInsets.symmetric(vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+        decoration: BoxDecoration(
+          color: const Color(0xFF1E1E20),
+          borderRadius: const BorderRadius.only(
+            topLeft: Radius.circular(18),
+            topRight: Radius.circular(18),
+            bottomRight: Radius.circular(18),
+            bottomLeft: Radius.circular(4),
+          ),
+          border: Border.all(color: Colors.white.withOpacity(0.06), width: 1),
+        ),
+        child: AnimatedBuilder(
+          animation: _c,
+          builder: (context, _) {
+            final t = _c.value;
+            int active = (t * 3).floor() % 3;
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              children: List.generate(3, (i) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2),
+                  child: Opacity(
+                    opacity: i == active ? 1.0 : 0.35,
+                    child: const CircleAvatar(radius: 3, backgroundColor: Colors.white),
+                  ),
+                );
+              }),
+            );
+          },
         ),
       ),
     );
