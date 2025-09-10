@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers.dart';
 import 'chat_screen.dart';
 import 'home_screen.dart';
-import 'settings_screen.dart';
 import 'sources_screen.dart';
+import 'settings_screen.dart';
 import '../../../widgets/umbra_bottom_nav.dart';
 import '../../../core/language/app_strings.dart';
 
@@ -17,6 +17,7 @@ class HistoryScreen extends ConsumerWidget {
   final vm = ref.watch(chatViewModelProvider(null));
     final t = ref.watch(appStringsProvider);
     return Scaffold(
+      extendBody: true,
       appBar: AppBar(
         title: Text(t.historyTitle),
         backgroundColor: Colors.transparent,

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/language/app_strings.dart';
+import '../../../core/language/language_provider.dart';
 import '../../../widgets/umbra_bottom_nav.dart';
 import 'home_screen.dart';
 import 'chat_screen.dart';
 import 'history_screen.dart';
 import 'sources_screen.dart';
-import '../../../core/language/language_provider.dart';
 
 class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
@@ -16,6 +16,7 @@ class SettingsScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
   final t = ref.watch(appStringsProvider);
     return Scaffold(
+      extendBody: true,
       appBar: AppBar(
         title: Text(t.settingsTitle),
         backgroundColor: Colors.transparent,

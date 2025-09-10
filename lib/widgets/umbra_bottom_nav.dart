@@ -27,37 +27,44 @@ class UmbraBottomNav extends StatelessWidget {
     final primary = theme.colorScheme.primary;
     final inactive = Colors.white.withOpacity(0.68);
     final glass = Colors.white.withOpacity(0.06);
+  final mq = MediaQuery.of(context);
+  final bottomInset = mq.padding.bottom; // safe area / gesture nav
+  final bottomOffset = (bottomInset > 0 ? bottomInset : 0) + 12; // raise a bit from absolute bottom
 
-    return SafeArea(
+  return SafeArea(
       top: false,
+      bottom: false,
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(18, 0, 18, 30), // extra bottom gap for floating feel
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(44),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: glass,
-                borderRadius: BorderRadius.circular(44),
-                border: Border.all(color: Colors.white.withOpacity(0.10), width: 1),
-                boxShadow: [
-                  BoxShadow(
-                    color: primary.withOpacity(0.20),
-                    blurRadius: 26,
-                    spreadRadius: 1,
-                    offset: const Offset(0, 6),
-                  ),
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.35),
-                    blurRadius: 36,
-                    offset: const Offset(0, 10),
-                  ),
-                ],
-              ),
-              child: SizedBox(
-                height: 52,
+  padding: EdgeInsets.only(bottom: bottomOffset.toDouble()),
+        child: Align(
+          alignment: Alignment.bottomCenter,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(44),
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 18, sigmaY: 18),
+              child: AnimatedContainer(
+                duration: const Duration(milliseconds: 240),
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                decoration: BoxDecoration(
+                  color: glass,
+                  borderRadius: BorderRadius.circular(44),
+                  border: Border.all(color: Colors.white.withOpacity(0.10), width: 1),
+                  boxShadow: [
+                    BoxShadow(
+                      color: primary.withOpacity(0.20),
+                      blurRadius: 26,
+                      spreadRadius: 1,
+                      offset: const Offset(0, 6),
+                    ),
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.35),
+                      blurRadius: 36,
+                      offset: const Offset(0, 10),
+                    ),
+                  ],
+                ),
                 child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: List.generate(_icons.length, (i) {
                     final selected = i == currentIndex;
                     return _NavItem(
@@ -97,33 +104,30 @@ class _NavItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final highlight = primary.withOpacity(0.18);
     final borderColor = primary.withOpacity(0.48);
-    return Expanded(
-      child: Semantics(
-        selected: selected,
-        button: true,
-        child: InkWell(
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          hoverColor: Colors.transparent,
-          onTap: onTap,
-          child: Center(
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 260),
-              curve: Curves.easeOutCubic,
-              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
-              decoration: selected
-                  ? BoxDecoration(
-                      color: highlight,
-                      borderRadius: BorderRadius.circular(28),
-                      border: Border.all(color: borderColor.withOpacity(0.55), width: 1),
-                    )
-                  : null,
-              child: Icon(
-                icon,
-                size: 19,
-                color: selected ? primary : inactive,
-              ),
-            ),
+    return Semantics(
+      selected: selected,
+      button: true,
+      child: InkWell(
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor: Colors.transparent,
+        onTap: onTap,
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 260),
+          curve: Curves.easeOutCubic,
+          margin: const EdgeInsets.symmetric(horizontal: 4),
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 9),
+          decoration: selected
+              ? BoxDecoration(
+                  color: highlight,
+                  borderRadius: BorderRadius.circular(28),
+                  border: Border.all(color: borderColor.withOpacity(0.55), width: 1),
+                )
+              : null,
+          child: Icon(
+            icon,
+            size: 19,
+            color: selected ? primary : inactive,
           ),
         ),
       ),

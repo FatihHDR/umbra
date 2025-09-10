@@ -7,12 +7,12 @@ import '../../../utils/citation_utils.dart';
 import '../../../utils/code_syntax_highlighter.dart';
 import '../../../widgets/umbra_background.dart';
 import '../../../core/language/app_strings.dart';
+import '../../../widgets/umbra_logo_compact.dart';
 import '../../../widgets/umbra_bottom_nav.dart';
 import 'home_screen.dart';
 import 'history_screen.dart';
 import 'sources_screen.dart';
 import 'settings_screen.dart';
-import '../../../widgets/umbra_logo_compact.dart';
 
 class ChatScreen extends ConsumerWidget {
   const ChatScreen({super.key});
@@ -23,6 +23,7 @@ class ChatScreen extends ConsumerWidget {
   final notifier = ref.read(chatViewModelProvider(null).notifier);
   final t = ref.watch(appStringsProvider);
     return Scaffold(
+      extendBody: true,
       appBar: AppBar(
         title: const UmbraLogoCompact(size: 18),
         backgroundColor: Colors.transparent,
@@ -49,11 +50,16 @@ class ChatScreen extends ConsumerWidget {
         },
       ),
       body: UmbraBackground(
-        child: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: AnimatedPadding(
+          duration: const Duration(milliseconds: 180),
+          curve: Curves.easeOut,
+          // Add keyboard (viewInsets.bottom) so Column shrinks instead of overflowing.
+          padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          child: Column(
+          children: [
+            Expanded(
+              child: ListView.builder(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 100), // bottom extra so last bubble not under navbar/composer
               itemCount: state.messages.length + (state.loading ? 1 : 0),
               reverse: false,
               itemBuilder: (context, index) {
@@ -104,6 +110,7 @@ class ChatScreen extends ConsumerWidget {
                     style: const TextStyle(color: Colors.white),
                   );
                 }
+                final isMarkdown = content is MarkdownBody;
                 return Padding(
                   padding: const EdgeInsets.symmetric(vertical: 6),
                   child: Column(
@@ -121,7 +128,13 @@ class ChatScreen extends ConsumerWidget {
                           ),
                         ),
                         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                        child: content,
+                        child: isMarkdown
+                            // Wrap markdown to allow horizontal scroll for very long code/links -> removes overflow stripes
+                            ? SingleChildScrollView(
+                                scrollDirection: Axis.horizontal,
+                                child: content,
+                              )
+                            : content,
                       ),
                       if (index == state.messages.length - 1 && state.citations.isNotEmpty && msg.role.name == 'assistant')
                         Padding(
@@ -150,8 +163,9 @@ class ChatScreen extends ConsumerWidget {
               },
             ),
           ),
-          _Composer(onSend: notifier.ask, onChanged: notifier.setInput, loading: state.loading, hint: t.askHint),
-        ],
+            _Composer(onSend: notifier.ask, onChanged: notifier.setInput, loading: state.loading, hint: t.askHint),
+          ],
+          ),
         ),
       ),
     );

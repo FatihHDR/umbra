@@ -15,6 +15,7 @@ class SourcesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = ref.watch(appStringsProvider);
     return Scaffold(
+      extendBody: true,
       appBar: AppBar(
         title: Text(t.sourcesTitle),
         backgroundColor: Colors.transparent,
