@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '../features/splash/splash_screen.dart';
+import '../core/language/language_provider.dart';
 import '../widgets/umbra_background.dart';
 
 class UmbraApp extends ConsumerWidget {
@@ -60,10 +62,18 @@ class UmbraApp extends ConsumerWidget {
       ),
     );
 
+    final lang = ref.watch(languageProvider);
     return MaterialApp(
       title: 'Umbra',
       theme: theme,
       debugShowCheckedModeBanner: false,
+      locale: Locale(lang),
+      supportedLocales: const [Locale('en'), Locale('id')],
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       home: const SplashScreen(),
       builder: (context, child) => UmbraBackground(child: child),
     );

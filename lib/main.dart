@@ -14,6 +14,7 @@ Future<void> main() async {
   // Init Hive for local storage
   await Hive.initFlutter();
   await Hive.openBox('conversations');
+  await Hive.openBox('prefs');
 
   runApp(const ProviderScope(child: UmbraApp()));
 }

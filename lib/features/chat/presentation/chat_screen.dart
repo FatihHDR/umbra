@@ -7,37 +7,22 @@ import '../../../utils/citation_utils.dart';
 import '../../../utils/code_syntax_highlighter.dart';
 import '../../../widgets/umbra_background.dart';
 import '../../../widgets/umbra_logo_compact.dart';
+import '../../../core/language/app_strings.dart';
 import '../../../widgets/umbra_bottom_nav.dart';
 import 'history_screen.dart';
 import 'home_screen.dart';
 import 'settings_screen.dart';
+import 'sources_screen.dart';
 
 class ChatScreen extends ConsumerWidget {
   const ChatScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(chatViewModelProvider(null));
-    final notifier = ref.read(chatViewModelProvider(null).notifier);
+  final state = ref.watch(chatViewModelProvider(null));
+  final notifier = ref.read(chatViewModelProvider(null).notifier);
+  final t = ref.watch(appStringsProvider);
     return Scaffold(
-  appBar: AppBar(title: const UmbraLogoCompact(size: 18)),
-      bottomNavigationBar: UmbraBottomNav(
-        currentIndex: 1,
-        onTap: (i) {
-          if (i == 1) return;
-          switch (i) {
-            case 0:
-              Navigator.pushReplacement(context, _fade(const HomeScreen()));
-              break;
-            case 2:
-              Navigator.pushReplacement(context, _fade(const HistoryScreen()));
-              break;
-            case 3:
-              Navigator.pushReplacement(context, _fade(const SettingsScreen()));
-              break;
-          }
-        },
-      ),
       body: UmbraBackground(
         child: Column(
         children: [
@@ -140,7 +125,7 @@ class ChatScreen extends ConsumerWidget {
               },
             ),
           ),
-          _Composer(onSend: notifier.ask, onChanged: notifier.setInput, loading: state.loading),
+          _Composer(onSend: notifier.ask, onChanged: notifier.setInput, loading: state.loading, hint: t.askHint),
         ],
         ),
       ),
@@ -178,10 +163,11 @@ PageRouteBuilder _fade(Widget child) => PageRouteBuilder(
     );
 
 class _Composer extends StatelessWidget {
-  const _Composer({required this.onSend, required this.onChanged, required this.loading});
+  const _Composer({required this.onSend, required this.onChanged, required this.loading, required this.hint});
   final VoidCallback onSend;
   final ValueChanged<String> onChanged;
   final bool loading;
+  final String hint;
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +181,7 @@ class _Composer extends StatelessWidget {
                 onChanged: onChanged,
                 onSubmitted: (_) => onSend(),
                 textInputAction: TextInputAction.send,
-                decoration: const InputDecoration(hintText: 'Tanyakan apapun...'),
+                decoration: InputDecoration(hintText: hint),
               ),
             ),
             const SizedBox(width: 8),

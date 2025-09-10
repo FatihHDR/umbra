@@ -7,45 +7,19 @@ import 'history_screen.dart';
 import '../../../widgets/umbra_background.dart';
 import '../../../widgets/umbra_logo_compact.dart';
 import '../../../widgets/umbra_bottom_nav.dart';
+import '../../../core/language/app_strings.dart';
 import 'settings_screen.dart';
+import 'sources_screen.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final vm = ref.watch(chatViewModelProvider(null));
-    final notifier = ref.read(chatViewModelProvider(null).notifier);
-  return Scaffold(
-      appBar: AppBar(
-        title: const UmbraLogoCompact(size: 20),
-        actions: [
-          IconButton(
-            tooltip: 'Riwayat',
-            onPressed: () => Navigator.of(context).push(
-              MaterialPageRoute(builder: (_) => const HistoryScreen()),
-            ),
-            icon: const Icon(Icons.history),
-          )
-        ],
-      ),
-      bottomNavigationBar: UmbraBottomNav(
-        currentIndex: 0,
-        onTap: (i) {
-          if (i == 0) return; // already here
-          switch (i) {
-            case 1:
-              Navigator.pushReplacement(context, _fade(const ChatScreen()));
-              break;
-            case 2:
-              Navigator.pushReplacement(context, _fade(const HistoryScreen()));
-              break;
-            case 3:
-              Navigator.pushReplacement(context, _fade(const SettingsScreen()));
-              break;
-          }
-        },
-      ),
+  final vm = ref.watch(chatViewModelProvider(null));
+  final notifier = ref.read(chatViewModelProvider(null).notifier);
+  final t = ref.watch(appStringsProvider);
+    return Scaffold(
       body: UmbraBackground(
         child: Center(
         child: ConstrainedBox(
@@ -60,8 +34,8 @@ class HomeScreen extends ConsumerWidget {
                   onSubmitted: (_) => _goChat(context, ref),
                   textInputAction: TextInputAction.send,
                   style: const TextStyle(color: Colors.white),
-                  decoration: const InputDecoration(
-                    hintText: 'Tanyakan apapun...',
+                  decoration: InputDecoration(
+                    hintText: t.askHint,
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -71,7 +45,7 @@ class HomeScreen extends ConsumerWidget {
                     ElevatedButton.icon(
                       onPressed: () => _goChat(context, ref),
                       icon: const Icon(Icons.send),
-                      label: const Text('Tanya'),
+                      label: Text(t.askButton),
                     ),
                   ],
                 ),
