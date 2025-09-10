@@ -5,6 +5,7 @@ import '../providers.dart';
 import 'chat_screen.dart';
 import 'history_screen.dart';
 import '../../../widgets/umbra_background.dart';
+import '../../../widgets/umbra_logo_compact.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -15,7 +16,7 @@ class HomeScreen extends ConsumerWidget {
     final notifier = ref.read(chatViewModelProvider(null).notifier);
   return Scaffold(
       appBar: AppBar(
-        title: const Text('Umbra'),
+        title: const UmbraLogoCompact(size: 20),
         actions: [
           IconButton(
             tooltip: 'Riwayat',

@@ -17,7 +17,7 @@ class CodeSyntaxHighlighter extends SyntaxHighlighter {
         children.add(TextSpan(children: _convert(node.children!)));
       }
     }
-    return TextSpan(style: const TextStyle(fontFamily: 'monospace'), children: children);
+  return TextSpan(style: const TextStyle(fontFamily: 'JetBrainsMono'), children: children);
   }
 
   List<TextSpan> _convert(List<hl.Node> nodes) {

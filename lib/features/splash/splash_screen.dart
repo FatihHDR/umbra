@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../../widgets/umbra_background.dart';
 import '../../widgets/umbra_logo.dart';
@@ -16,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 1600),
+    duration: const Duration(milliseconds: 1400),
   )..forward();
 
   @override
@@ -26,14 +27,14 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   Future<void> _goNext() async {
-    await Future.delayed(const Duration(milliseconds: 1800));
+  await Future.delayed(const Duration(milliseconds: 1650));
     if (!mounted) return;
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
-        transitionDuration: const Duration(milliseconds: 650),
+        transitionDuration: const Duration(milliseconds: 520),
         pageBuilder: (_, __, ___) => const HomeScreen(),
         transitionsBuilder: (_, anim, __, child) {
-          final curved = CurvedAnimation(parent: anim, curve: Curves.easeOutCubic);
+          final curved = CurvedAnimation(parent: anim, curve: Curves.easeOutExpo);
             return FadeTransition(
               opacity: curved,
               child: child,
@@ -72,11 +73,11 @@ class _SplashScreenState extends State<SplashScreen>
                     opacity: opacity,
                     child: ShaderMask(
                       shaderCallback: (rect) => LinearGradient(
-                        colors: [primary, primary.withOpacity(0.4)],
+                        colors: [primary, primary.withOpacity(0.35)],
                       ).createShader(rect),
-                      child: const Text(
+                      child: Text(
                         'UMBRA',
-                        style: TextStyle(
+                        style: GoogleFonts.inter(
                           fontSize: 34,
                           letterSpacing: 8,
                           fontWeight: FontWeight.w700,
@@ -87,12 +88,13 @@ class _SplashScreenState extends State<SplashScreen>
                   ),
                   const SizedBox(height: 12),
                   Opacity(
-                    opacity: opacity * 0.8,
-                    child: const Text(
+                    opacity: opacity * 0.85,
+                    child: Text(
                       'Answer Engine',
-                      style: TextStyle(
+                      style: GoogleFonts.inter(
                         fontSize: 14,
-                        letterSpacing: 3,
+                        letterSpacing: 4,
+                        fontWeight: FontWeight.w500,
                         color: Colors.white70,
                       ),
                     ),

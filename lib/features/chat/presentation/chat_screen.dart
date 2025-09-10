@@ -6,6 +6,7 @@ import '../providers.dart';
 import '../../../utils/citation_utils.dart';
 import '../../../utils/code_syntax_highlighter.dart';
 import '../../../widgets/umbra_background.dart';
+import '../../../widgets/umbra_logo_compact.dart';
 
 class ChatScreen extends ConsumerWidget {
   const ChatScreen({super.key});
@@ -15,9 +16,7 @@ class ChatScreen extends ConsumerWidget {
     final state = ref.watch(chatViewModelProvider(null));
     final notifier = ref.read(chatViewModelProvider(null).notifier);
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Percakapan'),
-      ),
+  appBar: AppBar(title: const UmbraLogoCompact(size: 18)),
       body: UmbraBackground(
         child: Column(
         children: [

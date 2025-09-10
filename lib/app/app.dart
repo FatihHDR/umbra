@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import '../features/splash/splash_screen.dart';
 import '../widgets/umbra_background.dart';
@@ -12,6 +13,7 @@ class UmbraApp extends ConsumerWidget {
     const black = Color(0xFF121212);
     const red = Color(0xFFFF3B30);
 
+    final baseTextTheme = GoogleFonts.interTextTheme(ThemeData(brightness: Brightness.dark).textTheme);
     final theme = ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
@@ -21,6 +23,10 @@ class UmbraApp extends ConsumerWidget {
         secondary: red,
         surface: Color(0xFF1C1C1E),
         background: black,
+      ),
+      textTheme: baseTextTheme.copyWith(
+        bodyMedium: baseTextTheme.bodyMedium?.copyWith(height: 1.35),
+        titleLarge: baseTextTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
       ),
       textSelectionTheme: const TextSelectionThemeData(cursorColor: red),
       inputDecorationTheme: InputDecorationTheme(
@@ -40,7 +46,15 @@ class UmbraApp extends ConsumerWidget {
           borderSide: const BorderSide(color: red, width: 1.2),
         ),
       ),
-      appBarTheme: const AppBarTheme(backgroundColor: black, elevation: 0),
+      appBarTheme: AppBarTheme(
+        backgroundColor: black,
+        elevation: 0,
+        titleTextStyle: baseTextTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.w600,
+          letterSpacing: 1.2,
+          color: Colors.white,
+        ),
+      ),
       iconTheme: const IconThemeData(color: red),
       floatingActionButtonTheme: const FloatingActionButtonThemeData(
         backgroundColor: red,

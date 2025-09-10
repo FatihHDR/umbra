@@ -41,6 +41,7 @@ dependencies:
   # Networking & config
   dio: ^5.7.0
   flutter_dotenv: ^5.2.1
+  google_fonts: ^6.2.1
 
   # Local storage
   hive: ^2.2.3
@@ -91,6 +92,15 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   # fonts:
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: assets/fonts/Inter/Inter-VariableFont_slnt,wght.ttf
+    - family: JetBrainsMono
+      fonts:
+        - asset: assets/fonts/JetBrainsMono/JetBrainsMono-Regular.ttf
+        - asset: assets/fonts/JetBrainsMono/JetBrainsMono-Bold.ttf
+          weight: 700
   #   - family: Schyler
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf
