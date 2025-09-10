@@ -29,16 +29,16 @@ class SettingsScreen extends ConsumerWidget {
           if (i == 4) return;
           switch (i) {
             case 0:
-              fadeReplace(context, const HomeScreen());
+              fadeScaleReplace(context, const HomeScreen());
               break;
             case 1:
-              fadeReplace(context, const ChatScreen());
+              fadeScaleReplace(context, const ChatScreen());
               break;
             case 2:
-              fadeReplace(context, const HistoryScreen());
+              fadeScaleReplace(context, const HistoryScreen());
               break;
             case 3:
-              fadeReplace(context, const SourcesScreen());
+              fadeScaleReplace(context, const SourcesScreen());
               break;
           }
         },

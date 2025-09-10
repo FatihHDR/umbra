@@ -44,16 +44,16 @@ class ChatScreen extends ConsumerWidget {
           if (i == 1) return;
           switch (i) {
             case 0:
-              fadeReplace(context, const HomeScreen());
+              fadeScaleReplace(context, const HomeScreen());
               break;
             case 2:
-              fadeReplace(context, const HistoryScreen());
+              fadeScaleReplace(context, const HistoryScreen());
               break;
             case 3:
-              fadeReplace(context, const SourcesScreen());
+              fadeScaleReplace(context, const SourcesScreen());
               break;
             case 4:
-              fadeReplace(context, const SettingsScreen());
+              fadeScaleReplace(context, const SettingsScreen());
               break;
           }
         },

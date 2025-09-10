@@ -30,16 +30,16 @@ class HistoryScreen extends ConsumerWidget {
           if (i == 2) return;
           switch (i) {
             case 0:
-              fadeReplace(context, const HomeScreen());
+              fadeScaleReplace(context, const HomeScreen());
               break;
             case 1:
-              fadeReplace(context, const ChatScreen());
+              fadeScaleReplace(context, const ChatScreen());
               break;
             case 3:
-              fadeReplace(context, const SourcesScreen());
+              fadeScaleReplace(context, const SourcesScreen());
               break;
             case 4:
-              fadeReplace(context, const SettingsScreen());
+              fadeScaleReplace(context, const SettingsScreen());
               break;
           }
         },
