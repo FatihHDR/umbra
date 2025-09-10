@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../features/chat/presentation/home_screen.dart';
+import '../features/splash/splash_screen.dart';
+import '../widgets/umbra_background.dart';
 
 class UmbraApp extends ConsumerWidget {
   const UmbraApp({super.key});
@@ -51,7 +52,8 @@ class UmbraApp extends ConsumerWidget {
       title: 'Umbra',
       theme: theme,
       debugShowCheckedModeBanner: false,
-      home: const HomeScreen(),
+      home: const SplashScreen(),
+      builder: (context, child) => UmbraBackground(child: child),
     );
   }
 }

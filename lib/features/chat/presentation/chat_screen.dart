@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers.dart';
 import '../../../utils/citation_utils.dart';
 import '../../../utils/code_syntax_highlighter.dart';
+import '../../../widgets/umbra_background.dart';
 
 class ChatScreen extends ConsumerWidget {
   const ChatScreen({super.key});
@@ -17,7 +18,8 @@ class ChatScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Percakapan'),
       ),
-      body: Column(
+      body: UmbraBackground(
+        child: Column(
         children: [
           Expanded(
             child: SingleChildScrollView(
@@ -74,6 +76,7 @@ class ChatScreen extends ConsumerWidget {
           ),
           _Composer(onSend: notifier.ask, onChanged: notifier.setInput, loading: state.loading),
         ],
+        ),
       ),
     );
   }

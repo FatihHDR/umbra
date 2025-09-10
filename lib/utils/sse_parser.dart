@@ -1,32 +1,61 @@
 import 'dart:convert';
 
-/// Minimal SSE parser that yields lines starting with 'data:'
-/// and decodes JSON payloads for DeepSeek stream events.
+/// SSE parser for DeepSeek style event stream.
+/// Avoids generic type issues by manually decoding chunks.
 class DeepSeekSse {
   DeepSeekSse._();
 
   static Stream<Map<String, dynamic>> parse(Stream<List<int>> byteStream) async* {
-    // Convert bytes to lines
-    final lines = byteStream
-        .transform(utf8.decoder)
-        .transform(const LineSplitter());
-    await for (final line in lines) {
-      if (line.isEmpty) {
-        continue;
+    final buffer = StringBuffer();
+
+    List<Map<String, dynamic>> drainBuffer({bool forceAll = false}) {
+      final text = buffer.toString();
+      if (text.isEmpty) return const [];
+      final lines = text.split(RegExp(r'\r?\n'));
+      final events = <Map<String, dynamic>>[];
+      if (lines.isEmpty) return events;
+      final lastLineComplete = text.endsWith('\n') || text.endsWith('\r');
+      int endIndex = lines.length;
+      if (!lastLineComplete && !forceAll) {
+        endIndex -= 1; // keep last partial
       }
-      if (line.startsWith('data:')) {
-        final payload = line.substring(5).trim();
-        if (payload == "[DONE]") {
-          yield {'done': true};
-          continue;
-        }
-        try {
-          final obj = jsonDecode(payload) as Map<String, dynamic>;
-          yield obj;
-        } catch (_) {
-          // Ignore malformed JSON chunks
+      for (var i = 0; i < endIndex; i++) {
+        final l = lines[i];
+        if (l.isEmpty) continue;
+        final parsed = _parseLine(l);
+        if (parsed != null) events.add(parsed);
+      }
+      final trailing = (!lastLineComplete && !forceAll) ? lines.last : '';
+      buffer
+        ..clear()
+        ..write(trailing);
+      return events;
+    }
+
+    await for (final raw in byteStream) {
+      buffer.write(utf8.decode(raw));
+      if (buffer.toString().contains('\n')) {
+        for (final e in drainBuffer()) {
+          yield e;
         }
       }
     }
+    // Flush all remaining (force including partial)
+    for (final e in drainBuffer(forceAll: true)) {
+      yield e;
+    }
+  }
+
+  static Map<String, dynamic>? _parseLine(String line) {
+    if (!line.startsWith('data:')) return null;
+    final payload = line.substring(5).trim();
+    if (payload == '[DONE]') return {'done': true};
+    try {
+      final obj = jsonDecode(payload);
+      if (obj is Map<String, dynamic>) return obj;
+    } catch (_) {
+      // ignore malformed
+    }
+    return null;
   }
 }

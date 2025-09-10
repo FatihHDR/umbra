@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers.dart';
 import 'chat_screen.dart';
 import 'history_screen.dart';
+import '../../../widgets/umbra_background.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -12,7 +13,7 @@ class HomeScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final vm = ref.watch(chatViewModelProvider(null));
     final notifier = ref.read(chatViewModelProvider(null).notifier);
-    return Scaffold(
+  return Scaffold(
       appBar: AppBar(
         title: const Text('Umbra'),
         actions: [
@@ -25,7 +26,8 @@ class HomeScreen extends ConsumerWidget {
           )
         ],
       ),
-      body: Center(
+      body: UmbraBackground(
+        child: Center(
         child: ConstrainedBox(
           constraints: const BoxConstraints(maxWidth: 720),
           child: Padding(
@@ -60,6 +62,7 @@ class HomeScreen extends ConsumerWidget {
               ],
             ),
           ),
+        ),
         ),
       ),
     );
