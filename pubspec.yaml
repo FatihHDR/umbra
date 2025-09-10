@@ -92,15 +92,6 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   # fonts:
-  fonts:
-    - family: Inter
-      fonts:
-        - asset: assets/fonts/Inter/Inter-VariableFont_slnt,wght.ttf
-    - family: JetBrainsMono
-      fonts:
-        - asset: assets/fonts/JetBrainsMono/JetBrainsMono-Regular.ttf
-        - asset: assets/fonts/JetBrainsMono/JetBrainsMono-Bold.ttf
-          weight: 700
   #   - family: Schyler
   #     fonts:
   #       - asset: fonts/Schyler-Regular.ttf

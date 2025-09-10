@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../features/splash/splash_screen.dart';
 import '../widgets/umbra_background.dart';
@@ -13,7 +12,9 @@ class UmbraApp extends ConsumerWidget {
     const black = Color(0xFF121212);
     const red = Color(0xFFFF3B30);
 
-    final baseTextTheme = GoogleFonts.interTextTheme(ThemeData(brightness: Brightness.dark).textTheme);
+    final baseTextTheme = ThemeData(brightness: Brightness.dark).textTheme.apply(
+          fontFamily: 'JetBrains Mono',
+        );
     final theme = ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
@@ -24,10 +25,7 @@ class UmbraApp extends ConsumerWidget {
         surface: Color(0xFF1C1C1E),
         background: black,
       ),
-      textTheme: baseTextTheme.copyWith(
-        bodyMedium: baseTextTheme.bodyMedium?.copyWith(height: 1.35),
-        titleLarge: baseTextTheme.titleLarge?.copyWith(fontWeight: FontWeight.w600),
-      ),
+  textTheme: baseTextTheme,
       textSelectionTheme: const TextSelectionThemeData(cursorColor: red),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,

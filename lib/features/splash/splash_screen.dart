@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 import '../../widgets/umbra_background.dart';
 import '../../widgets/umbra_logo.dart';
@@ -75,9 +74,9 @@ class _SplashScreenState extends State<SplashScreen>
                       shaderCallback: (rect) => LinearGradient(
                         colors: [primary, primary.withOpacity(0.35)],
                       ).createShader(rect),
-                      child: Text(
+                      child: const Text(
                         'UMBRA',
-                        style: GoogleFonts.inter(
+                        style: TextStyle(
                           fontSize: 34,
                           letterSpacing: 8,
                           fontWeight: FontWeight.w700,
@@ -89,9 +88,9 @@ class _SplashScreenState extends State<SplashScreen>
                   const SizedBox(height: 12),
                   Opacity(
                     opacity: opacity * 0.85,
-                    child: Text(
+                    child: const Text(
                       'Answer Engine',
-                      style: GoogleFonts.inter(
+                      style: TextStyle(
                         fontSize: 14,
                         letterSpacing: 4,
                         fontWeight: FontWeight.w500,
