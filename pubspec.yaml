@@ -40,6 +40,10 @@ dependencies:
   # State management & DI
   flutter_riverpod: ^2.5.1
 
+  # Firebase
+  firebase_core: ^2.30.0
+  firebase_auth: ^4.17.8
+
   # Networking & config
   dio: ^5.7.0
   flutter_dotenv: ^5.2.1

@@ -89,7 +89,7 @@ class _SplashScreenState extends State<SplashScreen>
                   Opacity(
                     opacity: opacity * 0.85,
                     child: const Text(
-                      'Answer Engine',
+                      'Semantic Understanding Core',
                       style: TextStyle(
                         fontSize: 14,
                         letterSpacing: 4,
