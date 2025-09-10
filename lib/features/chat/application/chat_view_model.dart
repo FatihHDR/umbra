@@ -11,6 +11,7 @@ class ChatState {
   final bool loading;
   final List<String> citations;
   final List<ConversationSummary> history;
+  final String? error;
 
   const ChatState({
     required this.conversationId,
@@ -19,6 +20,7 @@ class ChatState {
     required this.loading,
     required this.citations,
     required this.history,
+  this.error,
   });
 
   ChatState copyWith({
@@ -28,6 +30,7 @@ class ChatState {
     bool? loading,
     List<String>? citations,
     List<ConversationSummary>? history,
+  String? error,
   }) =>
       ChatState(
         conversationId: conversationId ?? this.conversationId,
@@ -36,6 +39,7 @@ class ChatState {
         loading: loading ?? this.loading,
         citations: citations ?? this.citations,
         history: history ?? this.history,
+    error: error ?? this.error,
       );
 
   static ChatState initial(List<ConversationSummary> history) => ChatState(
@@ -45,6 +49,7 @@ class ChatState {
         loading: false,
         citations: const [],
         history: history,
+  error: null,
       );
 }
 
@@ -64,23 +69,27 @@ class ChatViewModel extends FamilyNotifier<ChatState, String?> {
   Future<void> ask() async {
     final question = state.input.trim();
     if (question.isEmpty) return;
-    state = state.copyWith(loading: true, answer: '', citations: const []);
-    final stream = _repo.ask(
-      conversationId: state.conversationId,
-      question: question,
-    );
-    await for (final e in stream) {
-      if (e.started) {
-        state = state.copyWith(conversationId: e.id);
-      } else if (e.completed) {
-        state = state.copyWith(
-            answer: e.content ?? state.answer,
-            citations: e.citations ?? const [],
-            loading: false,
-            history: _repo.listSummaries());
-      } else if (e.content != null) {
-        state = state.copyWith(answer: e.content);
+    state = state.copyWith(loading: true, answer: '', citations: const [], error: null);
+    try {
+      final stream = _repo.ask(
+        conversationId: state.conversationId,
+        question: question,
+      );
+      await for (final e in stream) {
+        if (e.started) {
+          state = state.copyWith(conversationId: e.id);
+        } else if (e.completed) {
+          state = state.copyWith(
+              answer: e.content ?? state.answer,
+              citations: e.citations ?? const [],
+              loading: false,
+              history: _repo.listSummaries());
+        } else if (e.content != null) {
+          state = state.copyWith(answer: e.content);
+        }
       }
+    } catch (e) {
+      state = state.copyWith(loading: false, error: e.toString());
     }
   }
 }

@@ -25,6 +25,10 @@ class ChatScreen extends ConsumerWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  if (state.error != null) ...[
+                    Text(state.error!, style: const TextStyle(color: Colors.red)),
+                    const SizedBox(height: 12),
+                  ],
                   if (state.answer.isNotEmpty)
                     MarkdownBody(
                       data: linkifyCitations(state.answer),

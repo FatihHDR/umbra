@@ -74,13 +74,16 @@ class ConversationRepository {
       messages = [];
     }
 
-    messages.add(
-      const Message(
-        role: MessageRole.system,
-        content:
-            'You are Umbra, a precise and factual AI answer engine. Provide clear, synthesized answers with citations where necessary.',
-      ),
-    );
+    final hasSystem = messages.any((m) => m.role == MessageRole.system);
+    if (!hasSystem) {
+      messages.add(
+        const Message(
+          role: MessageRole.system,
+          content:
+              'You are Umbra, a precise and factual AI answer engine. Provide clear, synthesized answers with citations where necessary.',
+        ),
+      );
+    }
     messages.add(Message(role: MessageRole.user, content: question));
     await _save(id, messages);
     yield ConversationStreamEvent.started(id);
